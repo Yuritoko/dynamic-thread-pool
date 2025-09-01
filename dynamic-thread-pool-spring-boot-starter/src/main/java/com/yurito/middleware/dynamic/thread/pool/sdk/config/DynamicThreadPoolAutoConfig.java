@@ -7,7 +7,7 @@ import com.yurito.middleware.dynamic.thread.pool.sdk.domain.model.valobj.Registr
 import com.yurito.middleware.dynamic.thread.pool.sdk.registry.IRegistry;
 import com.yurito.middleware.dynamic.thread.pool.sdk.registry.redis.RedisRegistry;
 import com.yurito.middleware.dynamic.thread.pool.sdk.trigger.job.ThreadPoolDataReportJob;
-import com.yurito.middleware.dynamic.thread.pool.sdk.trigger.job.listener.ThreadPoolConfigAdjustListener;
+import com.yurito.middleware.dynamic.thread.pool.sdk.trigger.listener.ThreadPoolConfigAdjustListener;
 import org.apache.commons.lang.StringUtils;
 import org.redisson.Redisson;
 import org.redisson.api.RTopic;

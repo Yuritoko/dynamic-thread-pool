@@ -1,4 +1,4 @@
-package com.yurito.middleware.dynamic.thread.pool.sdk.trigger.job.listener;
+package com.yurito.middleware.dynamic.thread.pool.sdk.trigger.listener;
 
 import com.alibaba.fastjson.JSON;
 import com.yurito.middleware.dynamic.thread.pool.sdk.domain.IDynamicThreadPoolService;
