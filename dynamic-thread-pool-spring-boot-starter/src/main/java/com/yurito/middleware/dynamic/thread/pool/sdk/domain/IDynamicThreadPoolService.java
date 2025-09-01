@@ -11,9 +11,9 @@ import java.util.List;
  */
 public interface IDynamicThreadPoolService {
 
-    List<ThreadPoolConfigEntity> queryTreadPoolList();
+    List<ThreadPoolConfigEntity> queryThreadPoolList();
 
-    ThreadPoolConfigEntity queryTreadPoolConfigByName(String threadPoolName);
+    ThreadPoolConfigEntity queryThreadPoolConfigByName(String threadPoolName);
 
     void updateThreadPoolConfig(ThreadPoolConfigEntity threadPoolConfigEntity);
 

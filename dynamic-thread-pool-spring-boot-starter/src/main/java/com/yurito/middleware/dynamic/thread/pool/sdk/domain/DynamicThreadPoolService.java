@@ -30,7 +30,7 @@ public class DynamicThreadPoolService implements IDynamicThreadPoolService{
     }
 
     @Override
-    public List<ThreadPoolConfigEntity> queryTreadPoolList() {
+    public List<ThreadPoolConfigEntity> queryThreadPoolList() {
         Set<String> threadPoolBeanNames = threadPoolExecutorMap.keySet();
         List<ThreadPoolConfigEntity> threadPoolVOS = new ArrayList<>(threadPoolBeanNames.size());
         for (String beanName : threadPoolBeanNames) {
@@ -49,7 +49,7 @@ public class DynamicThreadPoolService implements IDynamicThreadPoolService{
     }
 
     @Override
-    public ThreadPoolConfigEntity queryTreadPoolConfigByName(String threadPoolName) {
+    public ThreadPoolConfigEntity queryThreadPoolConfigByName(String threadPoolName) {
         ThreadPoolExecutor threadPoolExecutor = threadPoolExecutorMap.get(threadPoolName);
         if (null == threadPoolExecutor) return new ThreadPoolConfigEntity(applicationName, threadPoolName);
 
