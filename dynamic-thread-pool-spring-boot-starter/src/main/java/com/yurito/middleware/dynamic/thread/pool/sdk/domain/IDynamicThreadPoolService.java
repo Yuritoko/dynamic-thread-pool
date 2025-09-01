@@ -1,7 +1,6 @@
 package com.yurito.middleware.dynamic.thread.pool.sdk.domain;
 
 import com.yurito.middleware.dynamic.thread.pool.sdk.domain.model.entity.ThreadPoolConfigEntity;
-import sun.nio.ch.ThreadPool;
 
 import java.util.List;
 
