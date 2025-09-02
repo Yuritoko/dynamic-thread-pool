@@ -51,6 +51,26 @@ public class ThreadPoolConfigEntity {
      * 队列剩余任务数
      */
     private int remainingCapacity;
+    
+    /**
+     * 队列容量（用于动态调整队列大小）
+     */
+    private int queueCapacity;
+
+    /**
+     * 拒绝策略
+     */
+    private String rejectPolicy;
+    
+    /**
+     * 已完成任务数
+     */
+    private long completedTaskCount;
+    
+    /**
+     * 拒绝任务数
+     */
+    private long rejectedTaskCount;
 
     public ThreadPoolConfigEntity() {
     }
@@ -123,5 +143,36 @@ public class ThreadPoolConfigEntity {
     public void setRemainingCapacity(int remainingCapacity) {
         this.remainingCapacity = remainingCapacity;
     }
+    
+    public int getQueueCapacity() {
+        return queueCapacity;
+    }
+    
+    public void setQueueCapacity(int queueCapacity) {
+        this.queueCapacity = queueCapacity;
+    }
 
+    public String getRejectPolicy() {
+        return rejectPolicy;
+    }
+    
+    public void setRejectPolicy(String rejectPolicy) {
+        this.rejectPolicy = rejectPolicy;
+    }
+    
+    public long getCompletedTaskCount() {
+        return completedTaskCount;
+    }
+    
+    public void setCompletedTaskCount(long completedTaskCount) {
+        this.completedTaskCount = completedTaskCount;
+    }
+    
+    public long getRejectedTaskCount() {
+        return rejectedTaskCount;
+    }
+    
+    public void setRejectedTaskCount(long rejectedTaskCount) {
+        this.rejectedTaskCount = rejectedTaskCount;
+    }
 }
