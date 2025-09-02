@@ -58,11 +58,36 @@ public class DynamicThreadPoolController {
     public Response<ThreadPoolConfigEntity> queryThreadPoolConfig(@RequestParam String appName, @RequestParam String threadPoolName) {
         try {
             String cacheKey = "THREAD_POOL_CONFIG_PARAMETER_LIST_KEY" + "_" + appName + "_" + threadPoolName;
+            
+            // 首先尝试从列表中获取数据
+            try {
+                RList<ThreadPoolConfigEntity> cacheList = redissonClient.getList(cacheKey);
+                if (cacheList.size() > 0) {
+                    ThreadPoolConfigEntity threadPoolConfigEntity = cacheList.get(0);
+                    return Response.<ThreadPoolConfigEntity>builder()
+                            .code(Response.Code.SUCCESS.getCode())
+                            .info(Response.Code.SUCCESS.getInfo())
+                            .data(threadPoolConfigEntity)
+                            .build();
+                }
+            } catch (Exception listException) {
+                log.debug("无法从列表中获取数据，尝试从bucket中获取");
+            }
+            
+            // 如果从列表获取失败，则尝试从bucket中获取数据
             ThreadPoolConfigEntity threadPoolConfigEntity = redissonClient.<ThreadPoolConfigEntity>getBucket(cacheKey).get();
+            if (threadPoolConfigEntity != null) {
+                return Response.<ThreadPoolConfigEntity>builder()
+                        .code(Response.Code.SUCCESS.getCode())
+                        .info(Response.Code.SUCCESS.getInfo())
+                        .data(threadPoolConfigEntity)
+                        .build();
+            }
+            
+            // 如果都获取不到数据，返回错误
             return Response.<ThreadPoolConfigEntity>builder()
-                    .code(Response.Code.SUCCESS.getCode())
-                    .info(Response.Code.SUCCESS.getInfo())
-                    .data(threadPoolConfigEntity)
+                    .code(Response.Code.UN_ERROR.getCode())
+                    .info("未找到线程池配置数据")
                     .build();
         } catch (Exception e) {
             log.error("查询线程池配置异常", e);

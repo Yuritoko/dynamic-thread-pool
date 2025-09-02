@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -26,31 +25,59 @@ public class Application {
     @Bean
     public ApplicationRunner applicationRunner(ExecutorService threadPoolExecutor01) {
         return args -> {
-            while (true){
-                // 创建一个随机时间生成器
-                Random random = new Random();
-                // 随机时间，用于模拟任务启动延迟
-                int initialDelay = random.nextInt(10) + 1; // 1到10秒之间
-                // 随机休眠时间，用于模拟任务执行时间
-                int sleepTime = random.nextInt(10) + 1; // 1到10秒之间
-
-                // 提交任务到线程池
-                threadPoolExecutor01.submit(() -> {
-                    try {
-                        // 模拟任务启动延迟
-                        TimeUnit.SECONDS.sleep(initialDelay);
-                        System.out.println("Task started after " + initialDelay + " seconds.");
-
-                        // 模拟任务执行
-                        TimeUnit.SECONDS.sleep(sleepTime);
-                        System.out.println("Task executed for " + sleepTime + " seconds.");
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
+            // 创建后台守护线程来运行任务生成器
+            Thread taskGeneratorThread = new Thread(() -> {
+                int taskCount = 0;
+                try {
+                    // 先提交足够多的任务来填满队列
+                    for (int i = 0; i < 10; i++) {
+                        final int taskId = taskCount++;
+                        threadPoolExecutor01.submit(() -> {
+                            try {
+                                // 模拟中等时间运行的任务，以便更好地测试队列
+                                System.out.println("Task " + taskId + " started.");
+                                TimeUnit.SECONDS.sleep(60); // 60秒的任务
+                                System.out.println("Task " + taskId + " completed.");
+                            } catch (InterruptedException e) {
+                                Thread.currentThread().interrupt();
+                                System.out.println("Task " + taskId + " interrupted.");
+                            }
+                        });
                     }
-                });
+                    
+                    System.out.println("Initial tasks submitted.");
+                    
+                    // 等待一段时间后再提交更多任务
+                    TimeUnit.SECONDS.sleep(30);
+                    
+                    // 再提交一批任务来测试队列容量
+                    for (int i = 0; i < 10; i++) {
+                        final int taskId = taskCount++;
+                        threadPoolExecutor01.submit(() -> {
+                            try {
+                                // 模拟中等时间运行的任务，以便更好地测试队列
+                                System.out.println("Task " + taskId + " started.");
+                                TimeUnit.SECONDS.sleep(60); // 60秒的任务
+                                System.out.println("Task " + taskId + " completed.");
+                            } catch (InterruptedException e) {
+                                Thread.currentThread().interrupt();
+                                System.out.println("Task " + taskId + " interrupted.");
+                            }
+                        });
+                    }
+                    
+                    System.out.println("Additional tasks submitted.");
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    System.out.println("Task generator interrupted.");
+                }
+            });
 
-                Thread.sleep(random.nextInt(50) + 1);
-            }
+            // 设置为守护线程，确保不会阻止应用关闭
+            taskGeneratorThread.setDaemon(true);
+            taskGeneratorThread.start();
+            
+            System.out.println("Task generator started. Submitting tasks to test queue capacity.");
         };
     }
 

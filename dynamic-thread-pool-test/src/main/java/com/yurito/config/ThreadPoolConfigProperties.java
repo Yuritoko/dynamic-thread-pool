@@ -22,5 +22,8 @@ public class ThreadPoolConfigProperties {
      * CallerRunsPolicy：如果任务添加线程池失败，那么主线程自己执行该任务
      * */
     private String policy = "AbortPolicy";
+    
+    /** 队列类型 */
+    private String queueType = "LinkedBlockingQueue";
 
 }

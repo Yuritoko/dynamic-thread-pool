@@ -9,8 +9,9 @@ thread:
         core-pool-size: 20
         max-pool-size: 50
         keep-alive-time: 5000
-        block-queue-size: 5000
-        policy: CallerRunsPolicy
+        block-queue-size: 2
+        policy: abortPolicy
+        queue-type: resizableCapacityLinkedBlockingQueue
 
 # 动态线程池管理配置
 dynamic:

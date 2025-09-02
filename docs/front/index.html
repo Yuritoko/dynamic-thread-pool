@@ -374,6 +374,10 @@
             <th>队列类型</th>
             <th>队列任务数</th>
             <th>队列剩余容量</th>
+            <th>队列容量</th>
+            <th>拒绝策略</th>
+            <th>已完成任务数</th>
+            <th>拒绝任务数</th>
             <th>操作</th>
         </tr>
         </thead>
@@ -403,6 +407,17 @@
 
             <label for="maximumPoolSize">最大线程数:</label>
             <input type="number" id="maximumPoolSize" name="maximumPoolSize" min="1">
+            
+            <label for="queueCapacity">队列容量:</label>
+            <input type="number" id="queueCapacity" name="queueCapacity" min="1">
+            
+            <label for="rejectPolicy">拒绝策略:</label>
+            <select id="rejectPolicy" name="rejectPolicy">
+                <option value="AbortPolicy">AbortPolicy</option>
+                <option value="DiscardPolicy">DiscardPolicy</option>
+                <option value="DiscardOldestPolicy">DiscardOldestPolicy</option>
+                <option value="CallerRunsPolicy">CallerRunsPolicy</option>
+            </select>
 
             <button type="button" onclick="updateConfig()">确认修改</button>
             <button type="button" id="cancelBtn">取消</button>
@@ -484,9 +499,9 @@
                     const row = document.createElement('tr');
 
                     // 创建单元格
-                    for (let j = 0; j < 10; j++) {
+                    for (let j = 0; j < 14; j++) {
                         const cell = document.createElement('td');
-                        if (j === 9) { // 操作列
+                        if (j === 13) { // 操作列
                             cell.className = 'action-cell';
                         }
                         row.appendChild(cell);
@@ -511,9 +526,13 @@
                 row.children[6].textContent = item.queueType;
                 row.children[7].textContent = item.queueSize;
                 row.children[8].textContent = item.remainingCapacity;
+                row.children[9].textContent = item.queueCapacity || '';
+                row.children[10].textContent = item.rejectPolicy || '';
+                row.children[11].textContent = item.completedTaskCount || 0;
+                row.children[12].textContent = item.rejectedTaskCount || 0;
 
                 // 更新操作按钮
-                row.children[9].innerHTML = '<button class="edit-btn" onclick="openModal(\'' + item.appName + '\', \'' + item.threadPoolName + '\')">修改</button>';
+                row.children[13].innerHTML = '<button class="edit-btn" onclick="openModal(\'' + item.appName + '\', \'' + item.threadPoolName + '\')">修改</button>';
             }
 
             // 隐藏多余的行
@@ -563,6 +582,12 @@
                         document.getElementById('threadPoolName').value = response.data.threadPoolName;
                         document.getElementById('corePoolSize').value = response.data.corePoolSize;
                         document.getElementById('maximumPoolSize').value = response.data.maximumPoolSize;
+                        if (response.data.queueCapacity) {
+                            document.getElementById('queueCapacity').value = response.data.queueCapacity;
+                        }
+                        if (response.data.rejectPolicy) {
+                            document.getElementById('rejectPolicy').value = response.data.rejectPolicy;
+                        }
                         modal.style.display = "block";
                     } else {
                         console.error('The request was successful but the data format is incorrect!');
@@ -583,6 +608,8 @@
             var threadPoolName = document.getElementById('threadPoolName').value;
             var corePoolSize = document.getElementById('corePoolSize').value;
             var maximumPoolSize = document.getElementById('maximumPoolSize').value;
+            var queueCapacity = document.getElementById('queueCapacity').value;
+            var rejectPolicy = document.getElementById('rejectPolicy').value;
 
             var xhr = new XMLHttpRequest();
             xhr.open('POST', 'http://localhost:8089/api/v1/dynamic/thread/pool/update_thread_pool_config', true);
@@ -608,7 +635,9 @@
                 appName: appName,
                 threadPoolName: threadPoolName,
                 corePoolSize: parseInt(corePoolSize, 10),
-                maximumPoolSize: parseInt(maximumPoolSize, 10)
+                maximumPoolSize: parseInt(maximumPoolSize, 10),
+                queueCapacity: parseInt(queueCapacity, 10),
+                rejectPolicy: rejectPolicy
             }));
         }
 
